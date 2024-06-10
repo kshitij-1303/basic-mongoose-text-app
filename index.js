@@ -9,6 +9,8 @@ const app = express();
 
 app.set("views", path.join(__dirname, "views"));
 app.set("viewengine", "ejs");
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
 
 main()
   .then((res) => {
@@ -19,20 +21,36 @@ main()
 async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/text");
 }
+// Index route
 
-let chat1 = new Chat({
-  from: "Peter Parker",
-  to: "Tony Stark",
-  message: "Naya suit dede bhai",
-  created_at: new Date(),
+app.get("/chats", async (req, res) => {
+  let chats = await Chat.find();
+  console.log(chats);
+  res.render("index.ejs", { chats });
 });
 
-chat1.save().then((res) => {
-  console.log(res);
+// New route
+
+app.get("/chats/new", (req, res) => {
+  res.render("new.ejs");
 });
 
-app.get("/", (req, res) => {
-  res.send("welcome");
+// Create route
+
+app.post("/chats", (req, res) => {
+  let { from, msg, to } = req.body;
+  let newChat = new Chat({
+    from: from,
+    to: to,
+    message: msg,
+    created_at: new Date(),
+  });
+  newChat
+    .save()
+    .then((res) => console.log("success"))
+    .catch((err) => console.log(err));
+
+  res.redirect("/chats");
 });
 
 app.listen(PORT, () => {
