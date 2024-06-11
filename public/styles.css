@@ -14,3 +14,16 @@ body {
   padding: 5px 15px;
   border-radius: 1rem;
 }
+.edit {
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.delete {
+  border-radius: 10px;
+  padding: 5px;
+}
+
+form.btn {
+  display: inline-block;
+}
