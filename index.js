@@ -70,10 +70,12 @@ app.put("/chats/:id", async (req, res) => {
   let { message: newMsg } = req.body;
   let updatedChat = await Chat.findByIdAndUpdate(
     id,
-    { message: newMsg },
+    { message: newMsg, updated_at: new Date() },
     { runValidators: true },
     { new: true }
   );
+
+  await Chat.findByIdAndUpdate();
 
   res.redirect("/chats");
 });
